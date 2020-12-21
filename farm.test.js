@@ -5,7 +5,10 @@ describe("getYieldForPlant", () => {
         name: "corn",
         yield: 30, //kilo
     };
-
+    const input = {
+        crop: corn,
+        numCrops: 10,
+    };
     test("Get yield for plant with no environment factors", () => {
         expect(getYieldForPlant(corn)).toBe(30);
     });
@@ -123,5 +126,36 @@ describe("getTotalProfit", () => {
         };
         const crops = [{ crop: corn, numCrops: 0 }];
         expect(getTotalProfit({ crops })).toBe(0);
+    });
+});
+
+describe("getYieldForPlant", () => {
+    test("Get yield for plant, with environment factors", () => {
+        const corn = {
+            name: "corn",
+            yield: 30, //kilo
+            factors: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50,
+                },
+                wind: {
+                    low: -20,
+                    medium: 0,
+                    high: 20,
+                },
+            },
+        };
+        const environmentFactors = {
+            sun: "low",
+            wind: "high",
+        };
+        const input = {
+            crop: corn,
+            numCrops: 10,
+            environmentFactors,
+        };
+        expect(getYieldForPlant(input)).toBe(18);
     });
 });
