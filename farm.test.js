@@ -306,3 +306,67 @@ describe("getProfitForCrop", () => {
         expect(getProfitForCrop(input, environmentFactorsB)).toBe(340);
     });
 });
+
+describe("getTotalProfit", () => {
+    test("Calculate total profit with multiple crops and environment factors", () => {
+        const corn = {
+            name: "corn",
+            yield: 3, //kilo
+            salePrice: 5, //euro per kilo
+            costs: 2, //euro per crop
+            factors: {
+                sun: {
+                    low: -50,
+                    medium: 0,
+                    high: 50,
+                },
+                wind: {
+                    low: -10,
+                    medium: 20,
+                    high: 0,
+                },
+                soil: {
+                    sand: -20,
+                    clay: 0,
+                },
+            },
+        };
+        const pumpkin = {
+            name: "pumpkin",
+            yield: 4, //kilo
+            salePrice: 5, //euro per kilo
+            costs: 2, //euro per crop
+            factors: {
+                sun: {
+                    low: 0,
+                    medium: 10,
+                    high: 20,
+                },
+                wind: {
+                    low: -20,
+                    medium: 0,
+                    high: 10,
+                },
+                soil: {
+                    sand: 0,
+                    clay: 30,
+                },
+            },
+        };
+        const environmentFactorsA = {
+            sun: "low",
+            wind: "high",
+            soil: "clay",
+        };
+        const environmentFactorsB = {
+            sun: "high",
+            soil: "sand",
+        };
+        const crops = [
+            { crop: corn, numCrops: 5 },
+            { crop: pumpkin, numCrops: 2 },
+        ];
+        expect(getTotalProfit({ crops }, environmentFactorsA)).toBe(80.7);
+        expect(getTotalProfit({ crops }, environmentFactorsB)).toBe(124);
+    });
+});
