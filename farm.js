@@ -1,19 +1,19 @@
 //Get Yield Value
-const getYieldForPlant = (input) => {
+const getYieldForPlant = (input, factors) => {
   if (input.hasOwnProperty('name') !== true) {
     let yieldForPlant = input.crop.yield;
     if (input.crop.hasOwnProperty('factors')) {
-      if (input.environmentFactors === undefined) {
+      if (factors === undefined) {
         return yieldForPlant;
       }
       else {
         let growthFactors = [];
-        for (const [key, value] of Object.entries(input.environmentFactors)) {
+        for (const [key, value] of Object.entries(factors)) {
           growthFactors.push((input.crop.factors[key][value] + 100) / 100);
         }
         let yieldForPlant = input.crop.yield;
         for (let i = 0; i < growthFactors.length; i++) {
-          yieldForPlant = growthFactors[i] * yieldForPlant;
+          yieldForPlant = growthFactors[i] * yieldForPlant; 1
         }
         return yieldForPlant;
       }
@@ -27,31 +27,31 @@ const getYieldForPlant = (input) => {
 }
 
 //Yield for Crop = Number of Crops * Yield Value
-const getYieldForCrop = (plant) => plant.numCrops * plant.crop.yield;
+const getYieldForCrop = (input, factors) => input.numCrops * getYieldForPlant(input, factors);
 
 //Sum of all Yield for Crops
-const getTotalYield = (plant) => {
+const getTotalYield = (input) => {
   let totalYield = 0;
-  for (let i = 0; i < plant.crops.length; i++) {
-    totalYield += plant.crops[i].numCrops * plant.crops[i].crop.yield;
+  for (let i = 0; i < input.crops.length; i++) {
+    totalYield += input.crops[i].numCrops * input.crops[i].crop.yield;
   }
   return totalYield;
 };
 
 //Costs for Crop = Number of Crops * Costs Value
-const getCostsForCrop = (plant) => plant.costs;
+const getCostsForCrop = (input) => input.crop.costs * input.numCrops;
 
 //Revenue for Crop = Yield Value * Sale Price
-const getRevenueForCrop = (plant) => plant.crop.yield * plant.crop.salePrice;
+const getRevenueForCrop = (input, factors) => getYieldForPlant(input, factors) * input.crop.salePrice * input.numCrops;
 
 //Profit for Crop = Revenue for Crop - Costs for Crop
-const getProfitForCrop = (plant) => plant.crop.yield * plant.crop.salePrice - plant.crop.costs;
+const getProfitForCrop = (input, factors) => getRevenueForCrop(input, factors) - getCostsForCrop(input, factors);
 
 //Sum of all Profits
-const getTotalProfit = (plant) => {
+const getTotalProfit = (input) => {
   let totalProfit = 0;
-  for (let i = 0; i < plant.crops.length; i++) {
-    totalProfit += plant.crops[i].numCrops * (plant.crops[i].crop.yield * plant.crops[i].crop.salePrice - plant.crops[i].crop.costs);
+  for (let i = 0; i < input.crops.length; i++) {
+    totalProfit += input.crops[i].numCrops * (input.crops[i].crop.yield * input.crops[i].crop.salePrice - input.crops[i].crop.costs);
   }
   return totalProfit;
 }
